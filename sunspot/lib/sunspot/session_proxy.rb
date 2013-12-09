@@ -91,5 +91,13 @@ module Sunspot
         'retry_5xx_session_proxy'
       )
     )
+    autoload(
+      :CustomShardingSessionProxy,
+      File.join(
+        File.dirname(__FILE__),
+        'session_proxy',
+        'custom_sharding_session_proxy'
+      )
+    )
   end
 end

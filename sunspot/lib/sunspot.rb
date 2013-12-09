@@ -515,7 +515,7 @@ module Sunspot
     def commit_if_dirty
       session.commit_if_dirty
     end
-    
+
     #
     # True if documents have been removed since the last commit.
     #
@@ -533,7 +533,7 @@ module Sunspot
     def commit_if_delete_dirty
       session.commit_if_delete_dirty
     end
-    
+
     # Returns the configuration associated with the singleton session. See
     # Sunspot::Configuration for details.
     #
@@ -572,8 +572,24 @@ module Sunspot
     #
     # Sunspot::Session:: the singleton session
     #
-    def session #:nodoc:
+    def session(shard_name = nil) #:nodoc:
       @session ||= Session.new
+
+      @shard = @session.session_for(shard_name) if shard_name.present?
+
+      if @shard.present?
+        @shard
+      elsif @session.is_a? Sunspot::SessionProxy::CustomShardingSessionProxy
+        # If the shard hasn't been specified, default to master solr
+        @session.session_for('local')
+      else
+        @session
+      end
+    end
+
+    def with_shard(shard_name)
+      @shard = session(shard_name)
+      self
     end
   end
 end
