@@ -575,9 +575,9 @@ module Sunspot
     def session(shard_name = nil) #:nodoc:
       @session ||= Session.new
 
-      @shard = @session.session_for(shard_name) if shard_name.present?
+      @shard = @session.session_for(shard_name) if shard_name
 
-      if @shard.present?
+      if defined?(@shard) && @shard
         @shard
       elsif @session.is_a? Sunspot::SessionProxy::CustomShardingSessionProxy
         # If the shard hasn't been specified, default to master solr
